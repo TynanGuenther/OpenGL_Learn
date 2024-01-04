@@ -11,7 +11,7 @@ void processInput(GLFWwindow *window);
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-const std::string WORKING_DIR ="/home/tg/Programming/OpenGL/OpenGL_Learn/shaders/src/";
+const std::string WORKING_DIR = "/home/tg/Programming/OpenGL/OpenGL_Learn/shaders/src/";
 
 int main()
 {
@@ -22,6 +22,9 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
 
     // glfw window creation
     // --------------------
@@ -43,9 +46,10 @@ int main()
         return -1;
     }
 
+    
     // build and compile our shader program
     // ------------------------------------
-    Shader ourShader(WORKING_DIR + "shaders/3.3.shader.vs", WORKING_DIR +"shaders/3.3.shader.fs"); // you can name your shader files however you like
+    Shader ourShader((WORKING_DIR + "exercise_2/3.3.shader.vs"), (WORKING_DIR + "shaders/3.3.shader.fs")); // you can name your shader files however you like
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -90,8 +94,14 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        float offset = 0.5;
+        int vertexOffsetLocation = glGetUniformLocation(ourShader.getID(), "offset");
+
+        
         // render the triangle
         ourShader.use();
+        glUniform1f(vertexOffsetLocation, offset);
+        
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
